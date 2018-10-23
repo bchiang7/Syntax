@@ -144,6 +144,7 @@ const Subscribe = () => (
           target="_blank"
           rel="noopener noreferrer"
           href="https://www.google.com/podcasts?feed=aHR0cHM6Ly9mZWVkLnN5bnRheC5mbS9yc3M%3D"
+          rel="noopener noreferrer"
         >
           Google Podcast
         </a>
@@ -167,6 +168,7 @@ const Subscribe = () => (
           target="_blank"
           rel="noopener noreferrer"
           href="https://playmusic.app.goo.gl/?ibi=com.google.PlayMusic&isi=691797987&ius=googleplaymusic&link=https://play.google.com/music/m/Ityd325x5s5ivr3fc74hvvgeztu?t%3DSyntax_-_Tasty_Web_Development_Treats%26pcampaignid%3DMKT-na-all-co-pr-mu-pod-16"
+          rel="noopener noreferrer"
         >
           Google Play
         </a>
@@ -176,6 +178,7 @@ const Subscribe = () => (
           target="_blank"
           rel="noopener noreferrer"
           href="https://open.spotify.com/show/4kYCRYJ3yK5DQbP5tbfZby?si=bOe7-kl6RnOHapMsVnFWgw"
+          rel="noopener noreferrer"
         >
           Spotify
         </a>

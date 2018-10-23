@@ -52,6 +52,7 @@ export default class SponsorPage extends React.Component {
           <figure style={{ float: 'left', marginRight: 35 }}>
             <img
               src="/static/sponsor/27576683_675183752871920_1707794213682282496_n.jpg"
+              alt="Syntax"
               width="400"
               alt="sponsor"
             />
@@ -104,6 +105,26 @@ export default class SponsorPage extends React.Component {
             Each spot will receive at least 23,000 downloads, and some of the
             shows reach 40-50,000 downloads just months after being launched.
           </p>
+
+          <blockquote className="twitter-tweet">
+            <p lang="en" dir="ltr">
+              To be honest{' '}
+              <a href="https://twitter.com/syntaxfm?ref_src=twsrc%5Etfw">
+                @syntaxfm
+              </a>{' '}
+              is the only podcast where I listen to the sponsor adds, they don’t
+              event feel like adds
+            </p>
+            &mdash; Omar Aguinaga (@Soyoag){' '}
+            <a href="https://twitter.com/Soyoag/status/988205788794572800?ref_src=twsrc%5Etfw">
+              April 22, 2018
+            </a>
+          </blockquote>
+          <script
+            async
+            src="https://platform.twitter.com/widgets.js"
+            charSet="utf-8"
+          />
 
           <p>
             While exact numbers are hard to get, here are a few nuggets of

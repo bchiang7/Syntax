@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import formatTime from '../lib/formatTime';
 import { theme, mixins, media } from '../styles';
 
+// TODO Fix all eslint issues
+
 const PlayerContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -111,6 +113,22 @@ const PlayerTitle = styled.h3`
     padding: 1rem;
   `};
 `;
+const PlayerToolTip = styled.div`
+  position: absolute;
+  top: 22px;
+  transform: translate(-50%);
+  opacity: 0;
+  &:after {
+    content: " ";
+    position: absolute;
+    bottom: 94%;
+    left: 50%;
+    margin-left: -2px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
+  }
+`;
 const PlayerInputs = styled.div`
   font-size: 0;
 `;
@@ -173,6 +191,7 @@ const PlayerVolume = styled.div`
   }
 `;
 class Player extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -194,6 +213,9 @@ class Player extends React.Component {
       currentTime: lastPlayed,
       playbackRate: 1,
       timeWasLoaded: lastPlayed !== 0,
+      showTooltip: false,
+      tooltipPosition: 0,
+      tooltipTime: '0:00',
     };
   }
 
@@ -225,9 +247,8 @@ class Player extends React.Component {
 
   timeUpdate = e => {
     console.log('Updating Time');
-    const { timeWasLoaded } = this.state;
     const { show } = this.props;
-
+    const { timeWasLoaded } = this.state;
     // Check if the user already had a curent time
     if (timeWasLoaded) {
       const lp = localStorage.getItem(`lastPlayed${show.number}`);
@@ -250,10 +271,19 @@ class Player extends React.Component {
     this.audio[method]();
   };
 
+  scrubTime = eventData =>
+    (eventData.nativeEvent.offsetX / this.progress.offsetWidth) *
+    this.audio.duration;
+
   scrub = e => {
-    const scrubTime =
-      (e.nativeEvent.offsetX / this.progress.offsetWidth) * this.audio.duration;
-    this.audio.currentTime = scrubTime;
+    this.audio.currentTime = this.scrubTime(e);
+  };
+
+  seekTime = e => {
+    this.setState({
+      tooltipPosition: e.nativeEvent.offsetX,
+      tooltipTime: formatTime(this.scrubTime(e)),
+    });
   };
 
   playPause = () => {
@@ -266,23 +296,43 @@ class Player extends React.Component {
     this.audio.volume = e.currentTarget.value;
   };
 
-  speed = () => {
-    const { playbackRate } = this.state;
-    let pbRate = playbackRate + 0.25;
-    if (pbRate > 2.5) {
-      pbRate = 0.75;
+  speedUp = () => {
+    this.speed(0.25);
+  };
+
+  speedDown = e => {
+    e.preventDefault();
+    this.speed(-0.25);
+  };
+
+  speed = change => {
+    const playbackRateMax = 2.5;
+    const playbackRateMin = 0.75;
+    // eslint-disable-next-line
+    let playbackRate = this.state.playbackRate + change;
+
+    if (playbackRate > playbackRateMax) {
+      playbackRate = playbackRateMin;
     }
-    this.setState({ playbackRate: pbRate });
+
+    if (playbackRate < playbackRateMin) {
+      playbackRate = playbackRateMax;
+    }
+
+    this.setState({ playbackRate });
   };
 
   render() {
     const { show } = this.props;
     const {
       playing,
+      playbackRate,
       progressTime,
       currentTime,
       duration,
-      playbackRate,
+      showTooltip,
+      tooltipPosition,
+      tooltipTime,
     } = this.state;
 
     return (
@@ -303,6 +353,13 @@ class Player extends React.Component {
         <PlayerMiddle>
           <Progress
             onClick={this.scrub}
+            onMouseMove={this.seekTime}
+            onMouseEnter={() => {
+              this.setState({ showTooltip: true });
+            }}
+            onMouseLeave={() => {
+              this.setState({ showTooltip: false });
+            }}
             innerRef={x => {
               this.progress = x;
             }}
@@ -312,10 +369,22 @@ class Player extends React.Component {
           <PlayerTitle>
             Playing: {show.displayNumber}: {show.title}
           </PlayerTitle>
+          <PlayerToolTip
+            style={{
+              left: `${tooltipPosition}px`,
+              opacity: `${showTooltip ? '1' : '0'}`,
+            }}
+          >
+            {tooltipTime}
+          </PlayerToolTip>
         </PlayerMiddle>
 
         <PlayerRight>
-          <PlayerSpeed onClick={this.speed} type="button">
+          <PlayerSpeed
+            onClick={this.speedUp}
+            onContextMenu={this.speedDown}
+            className="player__speed"
+            type="button">
             <span>FASTNESS</span>
             <SpeedDisplay>{playbackRate} &times;</SpeedDisplay>
           </PlayerSpeed>
